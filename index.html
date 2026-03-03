@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Holi Hackers</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
+
+body{
+height:100vh;
+overflow:hidden;
+background:linear-gradient(270deg,#ff0080,#ff8c00,#40e0d0,#8a2be2);
+background-size:800% 800%;
+animation:bgMove 15s ease infinite;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+color:#fff;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.overlay{
+position:absolute;
+width:100%;
+height:100%;
+background:radial-gradient(circle at center,rgba(255,255,255,0.1),rgba(0,0,0,0.6));
+mix-blend-mode:overlay;
+}
+
+.container{
+position:relative;
+text-align:center;
+padding:40px;
+backdrop-filter:blur(15px);
+background:rgba(0,0,0,0.35);
+border-radius:20px;
+box-shadow:0 0 40px rgba(255,255,255,0.3);
+z-index:2;
+width:90%;
+max-width:400px;
+}
+
+h1{
+font-size:1.8rem;
+margin-bottom:20px;
+text-shadow:0 0 15px #fff;
+}
+
+input{
+width:100%;
+padding:10px;
+border:none;
+border-radius:20px;
+outline:none;
+font-size:1rem;
+text-align:center;
+margin-bottom:15px;
+}
+
+button{
+padding:10px 25px;
+border:none;
+border-radius:30px;
+background:linear-gradient(45deg,#ff0080,#00ffff);
+color:#fff;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 0 20px #fff;
+}
+
+button:hover{
+transform:scale(1.1);
+box-shadow:0 0 40px #fff;
+}
+
+#popupName{
+position:absolute;
+top:10%;
+font-size:3rem;
+font-weight:bold;
+display:none;
+animation:pop 1s ease forwards;
+z-index:3;
+text-align:center;
+width:100%;
+}
+
+@keyframes pop{
+0%{transform:scale(0);opacity:0}
+100%{transform:scale(1);opacity:1}
+}
+
+canvas{
+position:absolute;
+top:0;
+left:0;
+}
+
+footer{
+position:absolute;
+bottom:15px;
+font-size:0.9rem;
+opacity:0.8;
+text-align:center;
+width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background Music -->
+<audio id="bgMusic" loop>
+  <source src="holi1.mp3" type="audio/mpeg">
+</audio>
+
+<div class="overlay"></div>
+<canvas id="dust"></canvas>
+
+<div id="popupName"></div>
+
+<div class="container">
+<h1>🎨 Happy Holi Hackers & Friends 💻</h1>
+<input type="text" id="nameInput" placeholder="Enter Your Name">
+<button onclick="celebrate()">Celebrate 🎉</button>
+</div>
+
+<footer>✨ Website created by <strong>Vishal Narwade</strong> ✨</footer>
+
+<script>
+const music = document.getElementById("bgMusic");
+
+function startMusic(){
+    music.play().catch(()=>{});
+    document.removeEventListener("click", startMusic);
+    document.removeEventListener("touchstart", startMusic);
+}
+
+document.addEventListener("click", startMusic);
+document.addEventListener("touchstart", startMusic);
+
+
+const canvas=document.getElementById("dust");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<150;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*6+2,
+d:Math.random()*1,
+color:`hsl(${Math.random()*360},100%,60%)`
+});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach(p=>{
+ctx.beginPath();
+ctx.fillStyle=p.color;
+ctx.globalAlpha=0.5;
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fill();
+});
+update();
+}
+
+function update(){
+particles.forEach(p=>{
+p.y+=p.d+1;
+if(p.y>canvas.height){
+p.y=0;
+p.x=Math.random()*canvas.width;
+}
+});
+}
+
+setInterval(draw,30);
+
+function celebrate(){
+let name=document.getElementById("nameInput").value.trim();
+if(name===""){alert("Enter your name first!");return;}
+
+let popup=document.getElementById("popupName");
+popup.innerHTML="🔥 Happy Holi "+name+" 🎨";
+popup.style.display="block";
+
+let hue=0;
+let colorInterval=setInterval(()=>{
+popup.style.color=`hsl(${hue},100%,60%)`;
+hue+=8;
+if(hue>360)hue=0;
+},80);
+
+setTimeout(()=>{
+clearInterval(colorInterval);
+},5000);
+}
+
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+</script>
+
+</body>
+</html>
